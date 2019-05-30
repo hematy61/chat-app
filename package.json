@@ -4,19 +4,33 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "webpack --config webpack.prod.js",
     "start": "node ./src/index.js",
-    "dev": "env-cmd --file ./config/dev.env nodemon ./src/index.js"
+    "dev-back": "env-cmd --file ./config/dev.env nodemon ./src/index.js",
+    "dev-front": "webpack-dev-server --config webpack.dev.js",
+    "safari-dev": "webpack-dev-server --host 0.0.0.0 --port 4000 --config webpack.dev.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^2.1.1",
     "env-cmd": "^9.0.1",
+    "mini-css-extract-plugin": "^0.7.0",
+    "node-sass": "^4.12.0",
     "nodemon": "^1.19.1",
+    "postcss-loader": "^3.0.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
     "webpack": "^4.32.2",
-    "webpack-cli": "^3.3.2"
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.4.1",
+    "webpack-merge": "^4.2.1"
   }
 }
