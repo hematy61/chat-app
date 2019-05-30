@@ -13,7 +13,7 @@ const publicDirectoryPath = path.join(__dirname, '../public')
  *******************************************************************/
 app.use(express.static(publicDirectoryPath))
 app.get('', (req, res) => {
-  res.send('<h1>Welcome to Chat app with Socket.io</h1>')
+  res.render('index')
 })
 
 
