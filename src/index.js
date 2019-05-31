@@ -15,9 +15,17 @@ const port = process.env.PORT
 // define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')
 
-io.on('connection', () => {
+let message = "welcome!"
+
+io.on('connection', (socket) => {
   console.log('New websocket connection')
+  socket.emit('welcome', message)
+
+  socket.on('userMessage', (receivedMessage) => {
+    io.emit('userMessageFromServer', receivedMessage)
+  })
 })
+
 
 /*******************************************************************
  ***************** home route **************************************
