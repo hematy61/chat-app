@@ -7,13 +7,12 @@ socket.on('welcome', (message) => {
   console.log(message)
 })
 
-socket.on('userMessageFromServer', (message) => {
+socket.on('message', (message) => {
   console.log(message)
 })
 
 form.addEventListener('submit', (e) => {
   e.preventDefault()
-  console.log(e.target.elements)
  const message = e.target.elements.message.value
-  socket.emit('userMessage', message)
+  socket.emit('clientMessage', message)
 })
