@@ -7,7 +7,7 @@
     "build": "webpack --config webpack.prod.js",
     "start": "node ./src/index.js",
     "dev-back": "env-cmd --file ./config/dev.env nodemon ./src/index.js",
-    "dev-front": "webpack-dev-server --host 0.0.0.0 --config webpack.dev.js",
+    "dev-front": "webpack-dev-server --config webpack.dev.js",
     "safari-dev": "webpack-dev-server --host 0.0.0.0 --port 4000 --config webpack.dev.js"
   },
   "author": "",

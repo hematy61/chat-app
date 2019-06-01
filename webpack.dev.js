@@ -9,6 +9,7 @@ module.exports = merge(common, {
     contentBase: path.resolve(__dirname, 'dist'),
     port: 8181,
     open: 'google chrome',
-    historyApiFallback: true
+    historyApiFallback: true,
+    https: true
   }
 });
