@@ -2,6 +2,7 @@ const path = require('path')
 const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
+const Filter = require('bad-words')
 
 const app = express()
 // express by default makes a server for us which we don't have access to that. 
@@ -22,8 +23,13 @@ io.on('connection', (socket) => {
   socket.emit('welcome', message)
   socket.broadcast.emit('message', 'A new user has joined!')
 
-  socket.on('clientMessage', (receivedMessage) => {
-    io.emit('message', receivedMessage)
+  socket.on('clientMessage', (message, callback) => {
+    const filter = new Filter()
+    if (filter.isProfane(message)) {
+     return callback('Message contains Profanity and can not be sent!')
+    }
+    io.emit('message', message)
+    callback()
   })
 
   socket.on('sendLocation', (coords) => {
