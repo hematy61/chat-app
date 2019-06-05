@@ -35,6 +35,8 @@ document.querySelector('#send-location')
         longitude: position.coords.longitude,
         latitude: position.coords.latitude,
         time: position.timestamp
+      }, () => {
+        console.log('Location Shared!')
       })
     })
   })
