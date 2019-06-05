@@ -1,21 +1,31 @@
 import io from "socket.io-client";
 const socket = io('http://localhost:4040')
 
-const form = document.querySelector('#user-message')
-const location_display = document.querySelector('#location-display')
 
+// DOM elements
+const $messageForm = document.querySelector('#user-message')
+const $messageFormInput = $messageForm.querySelector('input')
+const $messageFormButton = $messageForm.querySelector('button')
+const location_display = document.querySelector('#location-display')
+const $shareLocationButton = document.querySelector('#send-location')
+
+// Socket.io genereal messages
 socket.on('welcome', (message) => {
   console.log(message)
 })
-
 socket.on('message', (message) => {
   console.log(message)
 })
 
-form.addEventListener('submit', (e) => {
+// handle sending user messages to server to be sent to other clients
+$messageForm.addEventListener('submit', (e) => {
   e.preventDefault()
- const message = e.target.elements.message.value
+  // disable button after sending message -- being re-enabled after 
+  // message delivered 
+  $messageFormButton.setAttribute('disabled', 'disabled')
+  const message = e.target.elements.message.value
   socket.emit('clientMessage', message, (error) => {
+    $messageFormButton.removeAttribute('disabled')
     if (error) {
       return console.log(error)
     }
@@ -23,7 +33,8 @@ form.addEventListener('submit', (e) => {
   })
 })
 
-document.querySelector('#send-location')
+// handle sharing user location
+$shareLocationButton
   .addEventListener('click', () => {
     if (!navigator.geolocation) {
       location_display.textContent = 'Location feature is not supported by your browser.'
