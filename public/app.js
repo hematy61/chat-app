@@ -20,15 +20,23 @@ socket.on('message', (message) => {
 // handle sending user messages to server to be sent to other clients
 $messageForm.addEventListener('submit', (e) => {
   e.preventDefault()
+
   // disable button after sending message -- being re-enabled after 
   // message delivered 
   $messageFormButton.setAttribute('disabled', 'disabled')
+
   const message = e.target.elements.message.value
+
   socket.emit('clientMessage', message, (error) => {
+    // re-enable send message button as message delivered
     $messageFormButton.removeAttribute('disabled')
+    $messageFormInput.value = ''
+    $messageFormInput.focus()
+
     if (error) {
       return console.log(error)
     }
+
     console.log('Message Delivered!')
   })
 })
@@ -36,17 +44,23 @@ $messageForm.addEventListener('submit', (e) => {
 // handle sharing user location
 $shareLocationButton
   .addEventListener('click', () => {
+
     if (!navigator.geolocation) {
       location_display.textContent = 'Location feature is not supported by your browser.'
       return undefined
     }
+    
+    // disable send location after user send location -- will be 
+    // enabled after response received
+    $shareLocationButton.setAttribute('disabled', 'disabled')
+
     navigator.geolocation.getCurrentPosition(position => {
-      socket.emit('sendLocation',
-      {
+      socket.emit('sendLocation', {
         longitude: position.coords.longitude,
         latitude: position.coords.latitude,
         time: position.timestamp
       }, () => {
+        $shareLocationButton.removeAttribute('disabled')
         console.log('Location Shared!')
       })
     })
