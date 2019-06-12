@@ -12,8 +12,11 @@ const $messageFormButton = $messageForm.querySelector('button')
 const $shareLocationButton = document.querySelector('#send-location')
 const $messages_display = document.querySelector('#messages-display')
 const $messages_template = document.querySelector('#messages-template').innerHTML
+const $location_messages_template = document.querySelector('#location-messages-template').innerHTML
+console.log($location_messages_template)
 
-// Socket.io genereal messages
+
+// Socket.io general messages
 socket.on('welcome', (message) => {
   console.log(message)
 })
@@ -21,6 +24,13 @@ socket.on('message', (message) => {
   console.log(message)
   const html = Mustache.render($messages_template, {
     message: message
+  })
+  $messages_display.insertAdjacentHTML("beforeend", html)
+})
+socket.on('locationMessage', (url) => {
+  console.log("line: ",url)
+  const html = Mustache.render($location_messages_template, {
+    url: url
   })
   $messages_display.insertAdjacentHTML("beforeend", html)
 })
