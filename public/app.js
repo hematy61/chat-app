@@ -13,12 +13,15 @@ const $shareLocationButton = document.querySelector('#send-location')
 const $messages_display = document.querySelector('#messages-display')
 const $messages_template = document.querySelector('#messages-template').innerHTML
 const $location_messages_template = document.querySelector('#location-messages-template').innerHTML
-console.log($location_messages_template)
 
 
 // Socket.io general messages
 socket.on('welcome', (message) => {
   console.log(message)
+  const welcomeMessage = Mustache.render($messages_template, {
+    message: 'Welcome'
+  })
+  $messages_display.insertAdjacentHTML('afterbegin', welcomeMessage)
 })
 socket.on('message', (message) => {
   console.log(message)
