@@ -1,13 +1,17 @@
 import io from "socket.io-client";
 const socket = io('http://localhost:4040')
+import Mustache from 'mustache';
+
 
 
 // DOM elements
 const $messageForm = document.querySelector('#user-message')
 const $messageFormInput = $messageForm.querySelector('input')
 const $messageFormButton = $messageForm.querySelector('button')
-const location_display = document.querySelector('#location-display')
+// const location_display = document.querySelector('#location-display')
 const $shareLocationButton = document.querySelector('#send-location')
+const $messages_display = document.querySelector('#messages-display')
+const $messages_template = document.querySelector('#messages-template').innerHTML
 
 // Socket.io genereal messages
 socket.on('welcome', (message) => {
@@ -15,6 +19,10 @@ socket.on('welcome', (message) => {
 })
 socket.on('message', (message) => {
   console.log(message)
+  const html = Mustache.render($messages_template, {
+    message: message
+  })
+  $messages_display.insertAdjacentHTML("beforeend", html)
 })
 
 // handle sending user messages to server to be sent to other clients
@@ -46,7 +54,11 @@ $shareLocationButton
   .addEventListener('click', () => {
 
     if (!navigator.geolocation) {
-      location_display.textContent = 'Location feature is not supported by your browser.'
+      const html = Mustache.render($messages_template, {
+        message: 'Location feature is not supported by your browser.'
+      })
+      $messages_display.insertAdjacentHTML("beforeend", html)
+      // location_display.textContent = 'Location feature is not supported by your browser.'
       return undefined
     }
     

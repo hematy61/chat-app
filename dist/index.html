@@ -10,12 +10,18 @@
 
 <body>
   <h1>Welcome to Socket.io chat app!</h1>
+  <div id="messages-display"></div>
   <form id="user-message" >
     <input type="text" placeholder="Type Your Message" name="message">
     <button>Send</button>
   </form>
-  <p id="location-display"></p>
   <button id="send-location">Share My Location</button>
+
+  <script id="messages-template" type="text/html">
+    <div>
+      <p>{{message}}</p>
+    </div>
+  </script>
   <script src="./app.mainBundle.js"></script>
 </body>
 
