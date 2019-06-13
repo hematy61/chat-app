@@ -1,44 +1,62 @@
 import io from "socket.io-client";
 const socket = io('http://localhost:4040')
 import Mustache from 'mustache';
+import { getDate } from '../src/utils/getDate';
 
 
-
+// ------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
 // DOM elements
+// ------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
+
 const $messageForm = document.querySelector('#user-message')
 const $messageFormInput = $messageForm.querySelector('input')
 const $messageFormButton = $messageForm.querySelector('button')
-// const location_display = document.querySelector('#location-display')
 const $shareLocationButton = document.querySelector('#send-location')
 const $messages_display = document.querySelector('#messages-display')
 const $messages_template = document.querySelector('#messages-template').innerHTML
 const $location_messages_template = document.querySelector('#location-messages-template').innerHTML
 
 
+
+// ------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
 // Socket.io general messages
+// ------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
+
 socket.on('welcome', (message) => {
   console.log(message)
   const welcomeMessage = Mustache.render($messages_template, {
-    message: 'Welcome'
+    message: 'Welcome',
+    createdAt: getDate()
   })
   $messages_display.insertAdjacentHTML('afterbegin', welcomeMessage)
 })
-socket.on('message', (message) => {
+socket.on('message', ({message, createdAt}) => {
   console.log(message)
   const html = Mustache.render($messages_template, {
-    message: message
+    message: message,
+    createdAt
   })
   $messages_display.insertAdjacentHTML("beforeend", html)
 })
-socket.on('locationMessage', (url) => {
-  console.log("line: ",url)
+socket.on('locationMessage', ({url, createdAt}) => {
+  console.log("line: ", url)
   const html = Mustache.render($location_messages_template, {
-    url: url
+    url: url,
+    createdAt
   })
   $messages_display.insertAdjacentHTML("beforeend", html)
 })
 
+// ------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
 // handle sending user messages to server to be sent to other clients
+// ------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
+
 $messageForm.addEventListener('submit', (e) => {
   e.preventDefault()
 
@@ -47,8 +65,8 @@ $messageForm.addEventListener('submit', (e) => {
   $messageFormButton.setAttribute('disabled', 'disabled')
 
   const message = e.target.elements.message.value
-
-  socket.emit('clientMessage', message, (error) => {
+  const createdAt = getDate()
+  socket.emit('clientMessage', {message, createdAt}, (error) => {
     // re-enable send message button as message delivered
     $messageFormButton.removeAttribute('disabled')
     $messageFormInput.value = ''
@@ -62,7 +80,12 @@ $messageForm.addEventListener('submit', (e) => {
   })
 })
 
-// handle sharing user location
+// ------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
+// Location Share
+// ------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
+
 $shareLocationButton
   .addEventListener('click', () => {
 
@@ -71,19 +94,19 @@ $shareLocationButton
         message: 'Location feature is not supported by your browser.'
       })
       $messages_display.insertAdjacentHTML("beforeend", html)
-      // location_display.textContent = 'Location feature is not supported by your browser.'
       return undefined
     }
-    
+
     // disable send location after user send location -- will be 
     // enabled after response received
     $shareLocationButton.setAttribute('disabled', 'disabled')
 
+    const createdAt = getDate()
     navigator.geolocation.getCurrentPosition(position => {
       socket.emit('sendLocation', {
         longitude: position.coords.longitude,
         latitude: position.coords.latitude,
-        time: position.timestamp
+        createdAt: createdAt
       }, () => {
         $shareLocationButton.removeAttribute('disabled')
         console.log('Location Shared!')
