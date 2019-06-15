@@ -10,15 +10,27 @@ import { getDate } from '../src/utils/getDate';
 // ------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------
 
+// Elements
 const $messageForm = document.querySelector('#user-message')
 const $messageFormInput = $messageForm.querySelector('input')
 const $messageFormButton = $messageForm.querySelector('button')
 const $shareLocationButton = document.querySelector('#send-location')
 const $messages_display = document.querySelector('#messages-display')
+
+// Templates
 const $messages_template = document.querySelector('#messages-template').innerHTML
 const $location_messages_template = document.querySelector('#location-messages-template').innerHTML
 
-
+// Parsing URL Options
+let url = location.search
+url = url.slice(1)
+let queryArray = url.split('&')
+let queryObject = {}
+queryArray.map(each => {
+  const splitted = each.split('=')
+  queryObject[splitted[0]] = splitted[1]
+})
+const { username, room } = queryObject
 
 // ------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------
@@ -113,3 +125,9 @@ $shareLocationButton
       })
     })
   })
+// ------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
+// Joining to a specific room
+// ------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
+socket.emit('join', {username, room})
